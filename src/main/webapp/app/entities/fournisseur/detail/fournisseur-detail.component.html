@@ -1,0 +1,64 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div *ngIf="fournisseur">
+      <h2 data-cy="fournisseurDetailsHeading"><span jhiTranslate="gestockApp.fournisseur.detail.title">Fournisseur</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ fournisseur.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.fournisseur.typeClient">Type Client</span></dt>
+        <dd>
+          <span jhiTranslate="{{ 'gestockApp.TypeFournisseur.' + fournisseur.typeClient }}">{{ fournisseur.typeClient }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.fournisseur.nom">Nom</span></dt>
+        <dd>
+          <span>{{ fournisseur.nom }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.fournisseur.prenom">Prenom</span></dt>
+        <dd>
+          <span>{{ fournisseur.prenom }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.fournisseur.tel">Tel</span></dt>
+        <dd>
+          <span>{{ fournisseur.tel }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.fournisseur.cnib">Cnib</span></dt>
+        <dd>
+          <span>{{ fournisseur.cnib }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.fournisseur.email">Email</span></dt>
+        <dd>
+          <span>{{ fournisseur.email }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.fournisseur.adresse">Adresse</span></dt>
+        <dd>
+          <span>{{ fournisseur.adresse }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.fournisseur.numroBanquaire">Numro Banquaire</span></dt>
+        <dd>
+          <span>{{ fournisseur.numroBanquaire }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.fournisseur.deleted">Deleted</span></dt>
+        <dd>
+          <span>{{ fournisseur.deleted }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/fournisseur', fournisseur.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

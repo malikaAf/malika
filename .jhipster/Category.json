@@ -1,0 +1,34 @@
+{
+  "name": "Category",
+  "fields": [
+    {
+      "fieldName": "libelle",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength", "unique"],
+      "fieldValidateRulesMinlength": "2"
+    },
+    {
+      "fieldName": "deleted",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "mark",
+      "otherEntityRelationshipName": "category",
+      "relationshipName": "marks"
+    }
+  ],
+  "entityTableName": "category",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["gestock"],
+  "changelogDate": "20210722155248"
+}

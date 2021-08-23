@@ -1,0 +1,40 @@
+{
+  "gestockApp": {
+    "entree": {
+      "home": {
+        "title": "Entrees",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Entree",
+        "createOrEditLabel": "Create or edit a Entree",
+        "notFound": "No Entrees found"
+      },
+      "created": "A new Entree is created with identifier {{ param }}",
+      "updated": "A Entree is updated with identifier {{ param }}",
+      "deleted": "A Entree is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Entree {{ id }}?"
+      },
+      "detail": {
+        "title": "Entree"
+      },
+      "id": "ID",
+      "libelle": "Libelle",
+      "quantite": "Quantite",
+      "prixUnitaireTTC": "Prix Unitaire TTC",
+      "serie": "Serie",
+      "model": "Model",
+      "caractSupplementaire": "Caract Supplementaire",
+      "dateEntree": "Date Entree",
+      "bordereau": "Bordereau",
+      "observation": "Observation",
+      "enStock": "En Stock",
+      "enCommande": "En Commande",
+      "deleted": "Deleted",
+      "sorties": "Sorties",
+      "article": "Article",
+      "fournisseur": "Fournisseur",
+      "exercice": "Exercice",
+      "parametre": "Parametre"
+    }
+  }
+}

@@ -1,0 +1,323 @@
+<div class="mt-5">
+  <jhi-alert-error></jhi-alert-error>
+  <div class="table table-responsive p-datatable-responsive-demo">
+    <p-toolbar styleClass="p-mb-4 mb-3">
+      <ng-template pTemplate="left">
+        <h5 class="p-m-0">Liste des acheteurs</h5>
+      </ng-template>
+      <button
+        pButton
+        pRipple
+        [label]="Delete"
+        icon="pi pi-trash"
+        class="p-button-danger"
+        title="Supprimer la selection"
+        [disabled]="!selectedAcheteurs || !selectedAcheteurs.length"
+        (click)="deleteSelectedAcheteurs()"
+      ></button>
+
+      <ng-template pTemplate="right">
+        <button pButton pRipple label="Ajouter" icon="plus" class="p-button-info p-mr-2 m-1" (click)="showDialog()"></button>
+        <button pButton pRipple label="Actualiser" (click)="loadAll()" [disabled]="isLoading" class="p-button-help">
+          <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        </button>
+      </ng-template>
+    </p-toolbar>
+
+    <p-table
+      *ngIf="acheteurs && acheteurs.length > 0"
+      #dt
+      styleClass="p-datatable-gridlines p-datatable-responsive-demo p-datatable-sm p-datatable-striped"
+      [value]="acheteurs"
+      [rows]="10"
+      [paginator]="true"
+      [rowHover]="true"
+      dataKey="id"
+      currentPageReportTemplate="Projection {first} à {last} de {totalRecords} marques"
+      [showCurrentPageReport]="true"
+      [(selection)]="selectedAcheteurs"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 3rem">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th pSortableColumn="typeClient">Type de client <p-sortIcon field="typeClient"></p-sortIcon></th>
+          <th pSortableColumn="nom">Nom <p-sortIcon field="nom"></p-sortIcon></th>
+          <th pSortableColumn="prenom">Prénom <p-sortIcon field="prenom"></p-sortIcon></th>
+          <th pSortableColumn="tel">Tel <p-sortIcon field="tel"></p-sortIcon></th>
+          <th pSortableColumn="cnib">CNIB <p-sortIcon field="cnib"></p-sortIcon></th>
+          <th pSortableColumn="email">E-mail <p-sortIcon field="email"></p-sortIcon></th>
+          <th pSortableColumn="adresse">Adresse <p-sortIcon field="adresse"></p-sortIcon></th>
+          <th pSortableColumn="numroBanquaire">Numéro Banquaire <p-sortIcon field="numroBanquaire"></p-sortIcon></th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-acheteur>
+        <tr>
+          <td>
+            <p-tableCheckbox [value]="acheteur"></p-tableCheckbox>
+          </td>
+          <td>{{ acheteur.typeClient }}</td>
+          <td>{{ acheteur.nom }}</td>
+          <td>{{ acheteur.prenom }}</td>
+          <td>{{ acheteur.tel }}</td>
+          <td>{{ acheteur.cnib }}</td>
+          <td>{{ acheteur.email }}</td>
+          <td>{{ acheteur.adresse }}</td>
+          <td>{{ acheteur.numroBanquaire }}</td>
+
+          <td class="text-center">
+            <button
+              pButton
+              pRipple
+              title="Modifier"
+              icon="pi pi-pencil"
+              class="p-button-rounded p-button-success p-mr-2"
+              (click)="update(acheteur)"
+            ></button>
+            <button
+              pButton
+              pRipple
+              title="Supprimer"
+              icon="pi pi-trash"
+              (click)="deleteAcheteur(acheteur)"
+              class="p-button-rounded p-button-danger"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <p-dialog
+    header="Enrgistrement de acheteur"
+    [(visible)]="display"
+    [style]="{ width: '600px' }"
+    [modal]="true"
+    styleClass="p-fluid"
+    [baseZIndex]="10000"
+    [draggable]="true"
+    [resizable]="true"
+  >
+    <form #myForm="ngForm" name="myForm" role="form" novalidate>
+      <div class="ui-dialog-content" style="height: 65vh">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="form-control-label" jhiTranslate="gestockApp.acheteur.typeClient" for="field_typeClient"
+                  >Type Client</label
+                >
+                <select
+                  class="form-control"
+                  name="typeClient"
+                  [(ngModel)]="acheteur.typeClient"
+                  id="field_typeClient"
+                  data-cy="typeClient"
+                >
+                  <option [ngValue]="null">{{ 'gestockApp.TypeAcheteur.null' | translate }}</option>
+                  <option value="ACHETEUR">{{ 'gestockApp.TypeAcheteur.ACHETEUR' | translate }}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <span class="text-danger">*</span>
+                <label for="nom">Nom</label>
+                <input
+                  id="nom"
+                  minlength="2"
+                  #nom="ngModel"
+                  type="text"
+                  [(ngModel)]="acheteur.nom"
+                  name="nom"
+                  id="nom"
+                  pInputText
+                  required
+                  autofocus
+                  class="form-control"
+                />
+                <span *ngIf="nom.invalid && (nom.dirty || nom.touched)">
+                  <span *ngIf="nom.errors?.required">
+                    <small class="text-danger">Le nom est requis</small>
+                  </span>
+                  <span *ngIf="nom.errors?.minlength">
+                    <small class="text-danger">Minimum 2 caractères</small>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="prenom">Prénom</label>
+                <input
+                  id="prenom"
+                  minlength="2"
+                  #prenom="ngModel"
+                  type="text"
+                  [(ngModel)]="acheteur.prenom"
+                  name="prenom"
+                  id="prenom"
+                  pInputText
+                  autofocus
+                  class="form-control"
+                />
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <span class="text-danger">*</span>
+                <label for="tel">Téléphone</label>
+                <input
+                  id="tel"
+                  minlength="2"
+                  #tel="ngModel"
+                  type="text"
+                  [(ngModel)]="acheteur.tel"
+                  name="tel"
+                  id="tel"
+                  pInputText
+                  required
+                  autofocus
+                  class="form-control"
+                  ng2TelInput
+                  (countryChange)="onCountryChange($event)"
+                />
+                <span *ngIf="tel.invalid && (tel.dirty || tel.touched)">
+                  <span *ngIf="tel.errors?.required">
+                    <small class="text-danger">Le téléphone est requis</small>
+                  </span>
+                  <span *ngIf="tel.errors?.minlength">
+                    <small class="text-danger">Minimum 2 caractères</small>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <span class="text-danger">*</span>
+                <label for="cnib">CNIB</label>
+                <input
+                  id="cnib"
+                  minlength="2"
+                  #cnib="ngModel"
+                  type="text"
+                  [(ngModel)]="acheteur.cnib"
+                  name="cnib"
+                  id="cnib"
+                  pInputText
+                  required
+                  autofocus
+                  class="form-control"
+                />
+                <span *ngIf="cnib.invalid && (cnib.dirty || cnib.touched)">
+                  <span *ngIf="cnib.errors?.required">
+                    <small class="text-danger">La CNIB est requis</small>
+                  </span>
+                  <span *ngIf="cnib.errors?.minlength">
+                    <small class="text-danger">Minimum 2 caractères</small>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <span class="text-danger">*</span>
+                <label for="cnib">L'E-mail</label>
+                <input
+                  id="email"
+                  minlength="2"
+                  #email="ngModel"
+                  type="text"
+                  [(ngModel)]="acheteur.email"
+                  name="email"
+                  pInputText
+                  required
+                  autofocus
+                  class="form-control"
+                />
+                <span *ngIf="email.invalid && (email.dirty || email.touched)">
+                  <span *ngIf="email.errors?.required">
+                    <small class="text-danger">L'E-Mail est requis</small>
+                  </span>
+                  <span *ngIf="email.errors?.minlength">
+                    <small class="text-danger">Minimum 2 caractères</small>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <span class="text-danger">*</span>
+                <label for="adresse">Adresse</label>
+                <input
+                  id="adresse"
+                  minlength="2"
+                  #adresse="ngModel"
+                  type="text"
+                  [(ngModel)]="acheteur.adresse"
+                  name="adresse"
+                  pInputText
+                  autofocus
+                  class="form-control"
+                />
+                <!--                <span *ngIf="adresse.invalid && (adresse.dirty || adresse.touched)">-->
+                <!--                  <span *ngIf="adresse.errors?.required">-->
+                <!--                    <small class="text-danger">L'addresse est requise</small>-->
+                <!--                  </span>-->
+                <!--                  <span *ngIf="adresse.errors?.minlength">-->
+                <!--                    <small class="text-danger">Minimum 2 caractères</small>-->
+                <!--                  </span>-->
+                <!--                </span>-->
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="numroBanquaire">Numéro Banquaire</label>
+                <input
+                  id="numroBanquaire"
+                  minlength="2"
+                  #numroBanquaire="ngModel"
+                  type="text"
+                  [(ngModel)]="acheteur.numroBanquaire"
+                  name="numroBanquaire"
+                  pInputText
+                  autofocus
+                  class="form-control"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <ng-template pTemplate="footer">
+      <div class="text-center">
+        <button type="button" id="cancel-save" (click)="hiddenDialog()" data-cy="entityCreateCancelButton" class="btn btn-secondary">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="myForm.invalid"
+          class="btn btn-primary"
+          (click)="save()"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <p-confirmDialog [style]="{ width: '600px' }" header="Confirmation" icon="exclamation-triangle"></p-confirmDialog>
+  <p-toast position="center"></p-toast>
+</div>

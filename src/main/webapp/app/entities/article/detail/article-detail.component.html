@@ -1,0 +1,42 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div *ngIf="article">
+      <h2 data-cy="articleDetailsHeading"><span jhiTranslate="gestockApp.article.detail.title">Article</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ article.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.article.libelle">Libelle</span></dt>
+        <dd>
+          <span>{{ article.libelle }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.article.deleted">Deleted</span></dt>
+        <dd>
+          <span>{{ article.deleted }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.article.mark">Mark</span></dt>
+        <dd>
+          <div *ngIf="article.mark">
+            <a [routerLink]="['/mark', article.mark?.id, 'view']">{{ article.mark?.libelle }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/article', article.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

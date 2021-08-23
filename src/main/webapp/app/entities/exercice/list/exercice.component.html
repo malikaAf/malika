@@ -1,0 +1,160 @@
+<div class="mt-5">
+  <div styleClass="p-datatable-responsive-demo">
+    <jhi-alert-error></jhi-alert-error>
+
+    <div class="alert alert-warning" id="no-result" *ngIf="exercices?.length === 0">
+      <span jhiTranslate="gestockApp.category.home.notFound">No exercices found</span>
+    </div>
+  </div>
+
+  <div class="table table-sm p-datatable-responsive-demo p-datatable-striped">
+    <p-toolbar styleClass="p-mb-4 mb-3">
+      <ng-template pTemplate="left">
+        <h5 class="text-center">Liste des Exercices</h5>
+      </ng-template>
+      <button
+        pButton
+        pRipple
+        [label]="Delete"
+        icon="pi pi-trash"
+        class="p-button-danger"
+        title="Supprimer la selection"
+        [disabled]="!selectedExercices || !selectedExercices.length"
+        (click)="deleteSelectedExercices()"
+      ></button>
+
+      <ng-template pTemplate="right">
+        <button pButton pRipple label="Ajouter" icon="pi pi-plus" class="p-button-info p-mr-2 m-1" (click)="showDialog()"></button>
+        <button pButton pRipple label="Actualiser" (click)="loadAll()" [disabled]="isLoading" class="p-button-help">
+          <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        </button>
+      </ng-template>
+    </p-toolbar>
+
+    <p-table
+      *ngIf="exercices && exercices.length > 0"
+      #dt
+      styleClass="p-datatable-gridlines p-datatable-responsive-demo p-datatable-sm p-datatable-striped"
+      [value]="exercices"
+      [rows]="10"
+      [(selection)]="selectedExercices"
+      [paginator]="true"
+      [rowHover]="true"
+      dataKey="id"
+      currentPageReportTemplate="Projection {first} à {last} de {totalRecords} exercices"
+      [showCurrentPageReport]="true"
+      [globalFilterFields]="['annee']"
+      styleClass="p-datatable-responsive-demo"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 3rem">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th class="text-center" pSortableColumn="annee">Année<p-sortIcon field="annee"></p-sortIcon></th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-exercice>
+        <tr>
+          <td>
+            <p-tableCheckbox [value]="exercice"></p-tableCheckbox>
+          </td>
+          <td>{{exercice.annee }}</td>
+          <td class="text-center">
+            <button
+              pButton
+              title="Modifier"
+              pRipple
+              icon="pi pi-pencil"
+              (click)="update(exercice)"
+              class="p-button-rounded p-button-success p-mr-2"
+            ></button>
+            <button
+              pButton
+              title="Supprimer"
+              pRipple
+              icon="pi pi-trash"
+              (click)="deleteExercice(exercice)"
+              class="p-button-rounded p-button-danger"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <p-dialog
+    header="Enrgistrement de exercice"
+    [(visible)]="display"
+    [style]="{ width: '600px' }"
+    [modal]="true"
+    styleClass="p-fluid"
+    [baseZIndex]="10000"
+    [draggable]="true"
+    [resizable]="false"
+  >
+    <div class="row justify-content-center">
+      <div class="col-8">
+        <form #myForm="ngForm" role="form" novalidate (ngSubmit)="save()">
+          <div>
+            <jhi-alert-error></jhi-alert-error>
+            <div class="form-group">
+              <div>
+                <span class="text-danger">*</span>
+                <label for="annee">Année</label>
+                <input
+                  id="annee"
+                  minlength="2"
+                  #annee="ngModel"
+                  class="form-control"
+                  type="text"
+                  name="annee"
+                  pInputText
+                  placeholder="Année"
+                  [(ngModel)]="exercice.annee"
+                  autofocus
+                  required
+                />
+                <div *ngIf="annee.invalid && (annee.dirty || annee.touched)">
+                  <div *ngIf="annee.errors?.required">
+                    <small class="text-danger">Le libellé est requis</small>
+                  </div>
+                  <div *ngIf="annee.errors?.minlength">
+                    <span class="text-danger">Minimum 2 caractères</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="text-center">
+        <button type="button" id="cancel-save" (click)="hiddenDialog()" data-cy="entityCreateCancelButton" class="btn btn-secondary">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          class="btn btn-primary"
+          [disabled]="myForm.invalid"
+          (click)="save()"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </ng-template>
+  </p-dialog>
+
+
+
+  <p-confirmDialog [style]="{ width: '600px' }" header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+  <p-toast position="center"></p-toast>
+
+
+</div>

@@ -1,0 +1,41 @@
+{
+  "name": "Mark",
+  "fields": [
+    {
+      "fieldName": "libelle",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength", "unique"],
+      "fieldValidateRulesMinlength": "2"
+    },
+    {
+      "fieldName": "deleted",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "article",
+      "otherEntityRelationshipName": "mark",
+      "relationshipName": "articles"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "category",
+      "otherEntityRelationshipName": "marks",
+      "relationshipName": "category",
+      "otherEntityField": "libelle"
+    }
+  ],
+  "entityTableName": "mark",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["gestock"],
+  "changelogDate": "20210722155348"
+}

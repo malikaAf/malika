@@ -1,0 +1,102 @@
+<!--<div class="mt-5">-->
+<!--  <h2>-->
+<!--    <span id="health-page-heading" jhiTranslate="health.title" data-cy="healthPageHeading">Health Checks</span>-->
+
+<!--    <button class="btn btn-primary float-right" (click)="refresh()">-->
+<!--      <fa-icon icon="sync"></fa-icon> <span jhiTranslate="health.refresh.button">Refresh</span>-->
+<!--    </button>-->
+<!--  </h2>-->
+
+<!--  <div class="table-responsive">-->
+<!--    <table id="healthCheck" class="table table-striped" aria-describedby="health-page-heading">-->
+<!--      <thead>-->
+<!--        <tr>-->
+<!--          <th scope="col" jhiTranslate="health.table.service">Service Name</th>-->
+<!--          <th scope="col" class="text-center" jhiTranslate="health.table.status">Status</th>-->
+<!--          <th scope="col" class="text-center" jhiTranslate="health.details.details">Details</th>-->
+<!--        </tr>-->
+<!--      </thead>-->
+<!--      <tbody *ngIf="health">-->
+<!--        <tr *ngFor="let componentHealth of health.components | keyvalue">-->
+<!--          <td>-->
+<!--            {{ 'health.indicator.' + componentHealth.key | translate }}-->
+<!--          </td>-->
+<!--          <td class="text-center">-->
+<!--            <span-->
+<!--              class="badge"-->
+<!--              [ngClass]="getBadgeClass(componentHealth.value!.status)"-->
+<!--              jhiTranslate="{{ 'health.status.' + componentHealth.value!.status }}"-->
+<!--            >-->
+<!--              {{ componentHealth.value!.status }}-->
+<!--            </span>-->
+<!--          </td>-->
+<!--          <td class="text-center">-->
+<!--            <a-->
+<!--              class="hand"-->
+<!--              (click)="showHealth({ key: componentHealth.key, value: componentHealth.value! })"-->
+<!--              *ngIf="componentHealth.value!.details"-->
+<!--            >-->
+<!--              <fa-icon icon="eye"></fa-icon>-->
+<!--            </a>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--      </tbody>-->
+<!--    </table>-->
+<!--  </div>-->
+<!--</div>-->
+
+<div class="mt-5">
+  <h2>
+    <span id="health-page-heading" jhiTranslate="health.title" data-cy="healthPageHeading">Health Checks</span>
+
+    <button class="btn btn-primary float-right" (click)="refresh()">
+      <fa-icon icon="sync"></fa-icon> <span jhiTranslate="health.refresh.button">Refresh</span>
+    </button>
+  </h2>
+
+  <p-table
+    aria-describedby="health-page-heading"
+    #dt
+    styleClass="p-datatable-gridlines p-datatable-responsive-demo p-datatable-sm p-datatable-striped"
+    [value]="health.components | keyvalue"
+    [rows]="10"
+    [paginator]="true"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Projection {first} à {last} de {totalRecords} services"
+    [showCurrentPageReport]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th jhiTranslate="health.table.service" class="text-center">Service Name <p-sortIcon></p-sortIcon></th>
+        <th jhiTranslate="health.table.status" class="text-center">Status <p-sortIcon></p-sortIcon></th>
+        <th jhiTranslate="health.details.details" class="text-center">Details <p-sortIcon></p-sortIcon></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-componentHealth *ngIf="health">
+      <tr>
+        <td>
+          {{ 'health.indicator.' + componentHealth.key | translate }}
+        </td>
+        <td class="text-center">
+          <span
+            class="badge"
+            [ngClass]="getBadgeClass(componentHealth.value!.status)"
+            jhiTranslate="{{ 'health.status.' + componentHealth.value!.status }}"
+          >
+            {{ componentHealth.value!.status }}
+          </span>
+        </td>
+        <td class="text-center">
+          <a
+            class="hand"
+            (click)="showHealth({ key: componentHealth.key, value: componentHealth.value! })"
+            *ngIf="componentHealth.value!.details"
+          >
+            <fa-icon icon="eye"></fa-icon>
+          </a>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

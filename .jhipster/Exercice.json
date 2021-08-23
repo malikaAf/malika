@@ -1,0 +1,34 @@
+{
+  "name": "Exercice",
+  "fields": [
+    {
+      "fieldName": "annee",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["min"],
+      "fieldValidateRulesMin": "2"
+    },
+    {
+      "fieldName": "deleted",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "entree",
+      "otherEntityRelationshipName": "exercice",
+      "relationshipName": "entrees"
+    }
+  ],
+  "entityTableName": "exercice",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["gestock"],
+  "changelogDate": "20210722155848"
+}

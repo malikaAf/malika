@@ -1,0 +1,655 @@
+<div class="mt-5">
+  <div>
+    <jhi-alert-error></jhi-alert-error>
+
+    <div class="alert alert-warning" id="no-result" *ngIf="sorties?.length === 0">
+      <span jhiTranslate="gestockApp.sortie.home.notFound">No sorties found</span>
+    </div>
+
+    <p-confirmDialog [style]="{ width: '600px' }" header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+    <p-toast position="center"></p-toast>
+
+    <div class="card">
+      <p-toolbar styleClass="p-mb-4 mb-3">
+        <ng-template pTemplate="left">
+          <h5 class="p-m-0">Liste des ventes</h5>
+        </ng-template>
+        <button
+          pButton
+          pRipple
+          [label]="Delete"
+          icon="pi pi-trash"
+          class="p-button-danger"
+          title="Supprimer la selection"
+          [disabled]="!selectedSorties || !selectedSorties.length"
+          (click)="deleteSelectedSorties()"
+        ></button>
+
+        <button pButton pRipple label="Ventes supprimés" icon="pi pi-times" (click)="getAllDeleted()" class="p-button-secondary"></button>
+
+        <ng-template pTemplate="right">
+          <button pButton pRipple label="Ajouter" icon="pi pi-plus" class="p-button-info p-mr-2 m-1" (click)="showDialog()"></button>
+          <button pButton pRipple label="Actualiser" (click)="loadAll()" [disabled]="isLoading" class="p-button-help">
+            <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+          </button>
+        </ng-template>
+      </p-toolbar>
+      <p-table
+        [columns]="sorties"
+        [value]="sorties"
+        [scrollable]="true"
+        [rows]="100"
+        scrollHeight="250px"
+        [virtualScroll]="true"
+        [virtualRowHeight]="10"
+        *ngIf="sorties && sorties.length > 0"
+        [(selection)]="selectedSorties"
+        #dt
+        [value]="sorties"
+        dataKey="id"
+        [rows]="10"
+        [rowHover]="true"
+        [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [loading]="loading"
+        styleClass="p-datatable-customers p-datatable-gridlines p-datatable-sm p-datatable-responsive-demo p-datatable-striped"
+        [paginator]="true"
+        currentPageReportTemplate="Projection {first} à {last} de {totalRecords} sorties"
+        [globalFilterFields]="[
+          'id',
+          'libelle',
+          'article',
+          'quantite',
+          'prixUnitaireTTC',
+          'caractSupplementaire',
+          'acheteur',
+          'dateSortie',
+          'entree'
+        ]"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="id"><p-tableHeaderCheckbox></p-tableHeaderCheckbox><p-sortIcon field="id"></p-sortIcon></th>
+            <th pSortableColumn="libelle"><p-sortIcon field="libelle"></p-sortIcon>Libellé</th>
+            <th pSortableColumn="entree"><p-sortIcon field="entree"></p-sortIcon>Article</th>
+            <th pSortableColumn="quantite"><p-sortIcon field="quantite"></p-sortIcon>Quantité</th>
+            <th pSortableColumn="prixUnitaireTTC"><p-sortIcon field="prixUnitaireTTC"></p-sortIcon>Prix unitaire</th>
+            <th pSortableColumn="entree"><p-sortIcon field="entree"></p-sortIcon>Caractéristiques</th>
+            <th pSortableColumn="acheteur"><p-sortIcon field="acheteur"></p-sortIcon>Acheteur</th>
+            <th pSortableColumn="dateSortie"><p-sortIcon field="dateSortie"></p-sortIcon>Date sortie</th>
+            <th pSortableColumn="libelle"><p-sortIcon field="libelle"></p-sortIcon>Actions</th>
+          </tr>
+          <tr>
+            <th>
+              <p-columnFilter type="text" field="id"></p-columnFilter>
+            </th>
+
+            <th>
+              <p-columnFilter type="text" field="libelle"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="entree"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="quantite"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="prixUnitaireTTC"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="entree"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="acheteur"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="dateSortie"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="libelle"></p-columnFilter>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-sortie>
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="sortie"></p-tableCheckbox>
+            </td>
+            <td>
+              {{ sortie.libelle }}
+            </td>
+            <td>
+              {{ sortie?.entree?.article?.libelle }}
+            </td>
+            <td>
+              {{ sortie.quantite }}
+            </td>
+            <td>
+              {{ sortie.prixUnitaireTTC }}
+            </td>
+            <td>
+              {{ sortie?.entree?.caractSupplementaire }}
+            </td>
+            <td>
+              {{ sortie?.acheteur?.nom }}
+            </td>
+            <td>
+              {{ sortie.dateSortie | formatMediumDate }}
+            </td>
+            <td class="text-center d-flex">
+              <button
+                (click)="detail(sortie)"
+                pButton
+                pRipple
+                title="Voir les détails"
+                icon="pi pi-eye-slash"
+                class="p-button-rounded p-button-info"
+              ></button>
+              <button
+                pButton
+                title="Modifier"
+                pRipple
+                icon="pi pi-pencil"
+                (click)="update(sortie)"
+                class="mx-1 p-button-rounded p-button-success p-mr-2"
+              ></button>
+              <button
+                pButton
+                title="Supprimer"
+                pRipple
+                icon="pi pi-trash"
+                (click)="deleteSortie(sortie)"
+                class="p-button-rounded p-button-danger"
+              ></button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5">Pas d'entrée trouvrée pour ce filtage</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <p-dialog
+      header="Enrgistrement de sortie(s)"
+      [(visible)]="display"
+      [style]="{ width: '600px' }"
+      [modal]="true"
+      styleClass="p-fluid"
+      [baseZIndex]="10000"
+      [draggable]="true"
+      [resizable]="true"
+    >
+      <form #myForm="ngForm" name="myForm" role="form" novalidate>
+        <div class="ui-dialog-content" style="height: 100vh">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <span class="text-danger">*</span>
+                  <label for="entree">Entrée ou l'article</label>
+                  <p-dropdown
+                    id="entree"
+                    #entree="ngModel"
+                    [required]="true"
+                    [options]="entrees"
+                    [virtualScroll]="true"
+                    name="entree"
+                    [(ngModel)]="sortie.entree"
+                    placeholder=" selectionner l'entrée"
+                    [filter]="true"
+                    [showClear]="true"
+                    [baseZIndex]="10000"
+                    [showTransitionOptions]="'0ms'"
+                    [hideTransitionOptions]="'0ms'"
+                    optionLabel="article.libelle"
+                  >
+                  </p-dropdown>
+
+                  <span *ngIf="entree.invalid && (entree.dirty || entree.touched)">
+                    <span *ngIf="entree.errors?.required">
+                      <small class="form-text text-danger">L'entrée est requise</small>
+                    </span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <span class="text-danger">*</span>
+                  <label for="acheteur">Acheteur</label>
+                  <p-dropdown
+                    id="acheteur"
+                    #acheteur="ngModel"
+                    [required]="true"
+                    [options]="acheteurs"
+                    [virtualScroll]="true"
+                    name="acheteur"
+                    [(ngModel)]="sortie.acheteur"
+                    placeholder=" selectionner l'acheteur"
+                    [filter]="true"
+                    [showClear]="true"
+                    [baseZIndex]="10000"
+                    [showTransitionOptions]="'0ms'"
+                    [hideTransitionOptions]="'0ms'"
+                    optionLabel="nom"
+                  >
+                  </p-dropdown>
+
+                  <span *ngIf="acheteur.invalid && (acheteur.dirty || acheteur.touched)">
+                    <span *ngIf="acheteur.errors?.required">
+                      <small class="form-text text-danger">Le fournisseur est requis</small>
+                    </span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <span class="text-danger">*</span>
+                  <label for="libelle">libelle</label>
+                  <input
+                    id="libelle"
+                    minlength="2"
+                    #libelle="ngModel"
+                    type="text"
+                    [(ngModel)]="sortie.libelle"
+                    name="libelle"
+                    id="libelle"
+                    pInputText
+                    required
+                    autofocus
+                    class="form-control ng-invalid ng-dirty"
+                  />
+                  <span *ngIf="libelle.invalid && (libelle.dirty || libelle.touched)">
+                    <span *ngIf="libelle.errors?.required">
+                      <small class="text-danger">Le libellé est requis</small>
+                    </span>
+                    <span *ngIf="libelle.errors?.minlength">
+                      <small class="text-danger">Minimum 2 caractères</small>
+                    </span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <span class="text-danger">*</span>
+                  <label for="quantite">Quantite</label>
+                  <input
+                    id="quantite"
+                    minlength="2"
+                    #quantite="ngModel"
+                    type="text"
+                    [(ngModel)]="sortie.quantite"
+                    name="quantite"
+                    id="quantite"
+                    pInputText
+                    required
+                    autofocus
+                    class="form-control"
+                  />
+                  <span *ngIf="quantite.invalid && (quantite.dirty || quantite.touched)">
+                    <span *ngIf="quantite.errors?.required">
+                      <small class="text-danger">La quantité est requise</small>
+                    </span>
+                    <span *ngIf="quantite.errors?.minlength">
+                      <small class="text-danger">Minimum 2 caractères</small>
+                    </span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <span class="text-danger">*</span>
+                  <label for="prixUnitaireTTC">Prix Unitaire TTC</label>
+                  <input
+                    id="prixUnitaireTTC"
+                    minlength="2"
+                    #prixUnitaireTTC="ngModel"
+                    type="text"
+                    [(ngModel)]="sortie.prixUnitaireTTC"
+                    name="prixUnitaireTTC"
+                    id="prixUnitaireTTC"
+                    pInputText
+                    required
+                    autofocus
+                    class="form-control"
+                  />
+                  <span *ngIf="prixUnitaireTTC.invalid && (prixUnitaireTTC.dirty || prixUnitaireTTC.touched)">
+                    <span *ngIf="prixUnitaireTTC.errors?.required">
+                      <small class="text-danger">Le prix est requis</small>
+                    </span>
+                    <span *ngIf="prixUnitaireTTC.errors?.minlength">
+                      <small class="text-danger">Minimum 2 caractères</small>
+                    </span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="form-control-label" jhiTranslate="gestockApp.sortie.dateSortie" for="field_dateSortie">Date Sortie</label>
+                  <div class="input-group">
+                    <input
+                      id="field_dateSortie"
+                      data-cy="dateSortie"
+                      type="text"
+                      class="form-control"
+                      name="dateSortie"
+                      ngbDatepicker
+                      #dateSortieDp="ngbDatepicker"
+                      #dateSortie="ngModel"
+                      [(ngModel)]="sortie.dateSortie"
+                      required
+                    />
+                    <span class="input-group-append">
+                      <button type="button" class="btn btn-secondary" (click)="dateSortieDp.toggle()">
+                        <fa-icon icon="calendar-alt"></fa-icon>
+                      </button>
+                    </span>
+                  </div>
+
+                  <span *ngIf="dateSortie.invalid && (dateSortie.dirty || dateSortie.touched)">
+                    <span *ngIf="dateSortie.errors?.required">
+                      <small class="text-danger">La date de Sortie est requise</small>
+                    </span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <span class="text-danger">*</span>
+                  <label>Observation</label>
+                  <textarea
+                    rows="2"
+                    cols="20"
+                    pInputTextarea
+                    [(ngModel)]="sortie.observation"
+                    id="observation"
+                    minlength="10"
+                    #observation="ngModel"
+                    type="text"
+                    [(ngModel)]="sortie.observation"
+                    name="observation"
+                    pInputText
+                    required
+                    autofocus
+                  ></textarea>
+
+                  <span *ngIf="observation.invalid && (observation.dirty || observation.touched)">
+                    <span *ngIf="observation.errors?.required">
+                      <small class="text-danger">L'observation est requise</small>
+                    </span>
+                    <span *ngIf="observation.errors?.minlength">
+                      <small class="text-danger">Minimum 10 caractères</small>
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <ng-template pTemplate="footer">
+        <div class="text-center">
+          <button type="button" id="cancel-save" (click)="hiddenDialog()" data-cy="entityCreateCancelButton" class="btn btn-secondary">
+            <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+          </button>
+
+          <button
+            type="submit"
+            id="save-entity"
+            data-cy="entityCreateSaveButton"
+            [disabled]="myForm.invalid"
+            class="btn btn-primary"
+            (click)="save()"
+          >
+            <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+          </button>
+        </div>
+      </ng-template>
+    </p-dialog>
+  </div>
+
+  <p-dialog
+    header="Détail d'une sortie"
+    [(visible)]="displayDetail"
+    [style]="{ width: '600px' }"
+    [modal]="true"
+    styleClass="p-fluid"
+    [baseZIndex]="10000"
+    [draggable]="true"
+    [resizable]="true"
+  >
+    <div class="ui-dialog-content">
+      <dl class="row-md jh-entity-details table table-bordered table-sm table-responsive p-sm-2">
+        <dt class="text-justify"><span>Libellé</span></dt>
+        <dd class="ml-sm-4">
+          <span>{{ sortie.libelle }}</span>
+        </dd>
+
+        <dt class="text-justify"><span>Article</span></dt>
+        <dd class="ml-sm-4">
+          <span>{{ sortie.entree?.article?.libelle }}</span>
+        </dd>
+
+        <dt class="text-justify"><span>Quantité</span></dt>
+        <dd class="ml-sm-4">
+          <span>{{ sortie.quantite }}</span>
+        </dd>
+
+        <dt class="text-justify"><span>Prix Unitaire</span></dt>
+        <dd class="ml-sm-4">
+          <span>{{ sortie?.entree?.prixUnitaireTTC }}</span>
+        </dd>
+
+        <dt class="text-justify"><span>Catégorie</span></dt>
+        <dd class="ml-sm-4">
+          <span>{{ sortie?.entree?.article?.mark?.category?.libelle }}</span>
+        </dd>
+
+        <dt class="text-justify"><span>Marque</span></dt>
+        <dd class="ml-sm-4">
+          <span>{{ sortie?.entree?.article?.mark?.libelle }}</span>
+        </dd>
+
+        <dt class="text-justify"><span>Modèle</span></dt>
+        <dd class="ml-sm-4">
+          <span>{{ sortie?.entree?.model }}</span>
+        </dd>
+
+        <dt class="text-justify"><span>Série</span></dt>
+        <dd class="ml-sm-4">
+          <span>{{ sortie?.entree?.serie }}</span>
+        </dd>
+
+        <dt class="text-justify"><span>Caractéristiques</span></dt>
+        <dd class="ml-sm-4">
+          <span>{{ sortie?.entree?.caractSupplementaire }}</span>
+        </dd>
+
+        <dt class="text-justify"><span>Date d'entrée</span></dt>
+        <dd class="ml-sm-4">
+          <span>{{ sortie?.entree?.dateEntree }}</span>
+        </dd>
+
+        <dt class="text-justify"><span>Date d'entrée</span></dt>
+        <dd class="ml-sm-4">
+          <span>{{ sortie.dateSortie }}</span>
+        </dd>
+
+        <dt class="text-justify"><span>Fournisseur</span></dt>
+        <dd class="ml-sm-4">
+          <span>{{ sortie?.entree?.fournisseur?.nom }}</span>
+        </dd>
+
+        <dt class="text-justify"><span>Acheteur</span></dt>
+        <dd class="ml-sm-4">
+          <span>{{ sortie.acheteur?.nom }}</span>
+        </dd>
+
+        <dt class="text-justify"><span>Paramètre</span></dt>
+        <dd class="ml-sm-4">
+          <span>{{ sortie?.entree?.parametre?.tva }}</span>
+        </dd>
+
+        <dt class="text-justify"><span>Exercice</span></dt>
+        <dd class="ml-sm-4">
+          <span>{{ sortie?.entree?.exercice?.annee }}</span>
+        </dd>
+
+        <dt class="text-justify"><span>Observation</span></dt>
+        <dd class="ml-sm-4">
+          <span>{{ sortie.observation }}</span>
+        </dd>
+      </dl>
+    </div>
+    <ng-template pTemplate="footer">
+      <div class="text-center">
+        <button type="button" icon="pi pi-times" (click)="hiddenDialogDetail()" data-cy="entityCreateCancelButton" class="btn btn-primary">
+          &nbsp;ok
+        </button>
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <p-dialog
+    header="Liste des ventes supprimées"
+    [(visible)]="displayDeletedListe"
+    [style]="{ width: '80%' }"
+    [modal]="true"
+    styleClass="p-fluid"
+    [baseZIndex]="10000"
+    [draggable]="true"
+    [resizable]="true"
+  >
+    <div class="card border border-danger">
+      <p-toolbar styleClass="p-mb-4 mb-3">
+        <ng-template pTemplate="left">
+          <h5 class="p-m-0 text-danger text-sm-center">Liste des ventes supprimées</h5>
+        </ng-template>
+        <button
+          hidden
+          pButton
+          pRipple
+          [label]="Delete"
+          icon="pi pi-trash"
+          class="p-button-danger"
+          title="Supprimer la selection"
+          [disabled]="!selectedSorties || !selectedSorties.length"
+          (click)="deleteSelectedSorties()"
+        ></button>
+
+        <button hidden class="btn btn-info" title="Voir les stocks supprimés">Stocks supprimés</button>
+
+        <ng-template pTemplate="right">
+          <button hidden pButton pRipple label="Ajouter" icon="pi pi-plus" class="p-button-info p-mr-2 m-1" (click)="showDialog()"></button>
+          <button hidden pButton pRipple label="Actualiser" (click)="loadAll()" [disabled]="isLoading" class="p-button-help">
+            <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+          </button>
+        </ng-template>
+      </p-toolbar>
+      <p-table
+        [columns]="deleteDataVar"
+        [value]="deleteDataVar"
+        [scrollable]="true"
+        [rows]="100"
+        scrollHeight="250px"
+        [virtualScroll]="true"
+        [virtualRowHeight]="10"
+        *ngIf="deleteDataVar && deleteDataVar.length > 0"
+        [(selection)]="selectedSorties"
+        #dt
+        [value]="deleteDataVar"
+        dataKey="id"
+        [rows]="10"
+        [rowHover]="true"
+        [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [loading]="loading"
+        styleClass="p-datatable-customers p-datatable-gridlines p-datatable-sm p-datatable-responsive-demo p-datatable-striped"
+        [paginator]="true"
+        currentPageReportTemplate="Projection {first} à {last} de {totalRecords} entrées"
+        [globalFilterFields]="['libelle', 'article', 'quantite', 'model', 'caractSupplementaire']"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="libelle"><p-sortIcon field="libelle"></p-sortIcon>Libellé</th>
+            <th pSortableColumn="article"><p-sortIcon field="article"></p-sortIcon>Article</th>
+            <th pSortableColumn="quantite"><p-sortIcon field="quantite"></p-sortIcon>Quantité</th>
+            <th pSortableColumn="model"><p-sortIcon field="model"></p-sortIcon>Model</th>
+            <th pSortableColumn="caractSupplementaire"><p-sortIcon field="caractSupplementaire"></p-sortIcon>Caractéristique</th>
+            <th pSortableColumn="libelle"><p-sortIcon field="libelle"></p-sortIcon>Actions</th>
+          </tr>
+          <tr>
+            <th>
+              <p-columnFilter type="text" field="libelle"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="article"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="quantite"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="model"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="caractSupplementaire"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="libelle"></p-columnFilter>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-sortie>
+          <tr>
+            <td>
+              {{ sortie?.libelle }}
+            </td>
+            <td>
+              {{ sortie.article?.libelle }}
+            </td>
+            <td>
+              {{ sortie.quantite }}
+            </td>
+            <td>
+              {{ sortie.model }}
+            </td>
+            <td>
+              {{ sortie.caractSupplementaire }}
+            </td>
+            <td class="text-center d-flex justify-content-sm-center">
+              <button
+                pButton
+                pRipple
+                title="Voir les détails"
+                (click)="detail(sortie)"
+                icon="pi pi-eye-slash"
+                class="p-button-rounded p-button-info mx-1"
+              ></button>
+              <button
+                pButton
+                title="Restorer"
+                (click)="restoreEntree(sortie)"
+                pRipple
+                icon="pi pi-refresh"
+                class="p-button-rounded p-button-secondary"
+              ></button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5">Pas d'entrée trouvrée pour ce filtage</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </p-dialog>
+</div>

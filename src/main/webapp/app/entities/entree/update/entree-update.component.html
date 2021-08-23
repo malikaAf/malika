@@ -1,0 +1,318 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-entree-heading" data-cy="EntreeCreateUpdateHeading" jhiTranslate="gestockApp.entree.home.createOrEditLabel">
+        Create or edit a Entree
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="form-group" [hidden]="editForm.get('id')!.value == null">
+          <label class="form-control-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="gestockApp.entree.libelle" for="field_libelle">Libelle</label>
+          <input type="text" class="form-control" name="libelle" id="field_libelle" data-cy="libelle" formControlName="libelle" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="gestockApp.entree.fournisseur" for="field_fournisseur">Fournisseur</label>
+          <select class="form-control" id="field_fournisseur" data-cy="fournisseur" name="fournisseur" formControlName="fournisseur">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="
+                fournisseurOption.id === editForm.get('fournisseur')!.value?.id ? editForm.get('fournisseur')!.value : fournisseurOption
+              "
+              *ngFor="let fournisseurOption of fournisseursSharedCollection; trackBy: trackFournisseurById"
+            >
+              {{ fournisseurOption.nom }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="gestockApp.entree.exercice" for="field_exercice">Exercice</label>
+          <select class="form-control" id="field_exercice" data-cy="exercice" name="exercice" formControlName="exercice">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="exerciceOption.id === editForm.get('exercice')!.value?.id ? editForm.get('exercice')!.value : exerciceOption"
+              *ngFor="let exerciceOption of exercicesSharedCollection; trackBy: trackExerciceById"
+            >
+              {{ exerciceOption.annee }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="gestockApp.entree.parametre" for="field_parametre">Parametre</label>
+          <select class="form-control" id="field_parametre" data-cy="parametre" name="parametre" formControlName="parametre">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="parametreOption.id === editForm.get('parametre')!.value?.id ? editForm.get('parametre')!.value : parametreOption"
+              *ngFor="let parametreOption of parametresSharedCollection; trackBy: trackParametreById"
+            >
+              {{ parametreOption.libelle }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label" jhiTranslate="gestockApp.entree.article" for="field_article">Article</label>
+        <select class="form-control" id="field_article" data-cy="article" name="article" formControlName="article">
+          <option [ngValue]="null"></option>
+          <option
+            [ngValue]="articleOption.id === editForm.get('article')!.value?.id ? editForm.get('article')!.value : articleOption"
+            *ngFor="let articleOption of articlesSharedCollection; trackBy: trackArticleById"
+          >
+            {{ articleOption.libelle }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label" jhiTranslate="gestockApp.entree.quantite" for="field_quantite">Quantite</label>
+        <input type="number" class="form-control" name="quantite" id="field_quantite" data-cy="quantite" formControlName="quantite" />
+        <div *ngIf="editForm.get('quantite')!.invalid && (editForm.get('quantite')!.dirty || editForm.get('quantite')!.touched)">
+          <small class="form-text text-danger" *ngIf="editForm.get('quantite')?.errors?.required" jhiTranslate="entity.validation.required">
+            This field is required.
+          </small>
+          <small
+            class="form-text text-danger"
+            *ngIf="editForm.get('quantite')?.errors?.min"
+            jhiTranslate="entity.validation.min"
+            [translateValues]="{ min: 1 }"
+          >
+            This field should be at least 1.
+          </small>
+          <small class="form-text text-danger" [hidden]="!editForm.get('quantite')?.errors?.number" jhiTranslate="entity.validation.number">
+            This field should be a number.
+          </small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label" jhiTranslate="gestockApp.entree.prixUnitaireTTC" for="field_prixUnitaireTTC"
+          >Prix Unitaire TTC</label
+        >
+        <input
+          type="number"
+          class="form-control"
+          name="prixUnitaireTTC"
+          id="field_prixUnitaireTTC"
+          data-cy="prixUnitaireTTC"
+          formControlName="prixUnitaireTTC"
+        />
+        <div
+          *ngIf="
+            editForm.get('prixUnitaireTTC')!.invalid && (editForm.get('prixUnitaireTTC')!.dirty || editForm.get('prixUnitaireTTC')!.touched)
+          "
+        >
+          <small
+            class="form-text text-danger"
+            *ngIf="editForm.get('prixUnitaireTTC')?.errors?.required"
+            jhiTranslate="entity.validation.required"
+          >
+            This field is required.
+          </small>
+          <small
+            class="form-text text-danger"
+            *ngIf="editForm.get('prixUnitaireTTC')?.errors?.min"
+            jhiTranslate="entity.validation.min"
+            [translateValues]="{ min: 1 }"
+          >
+            This field should be at least 1.
+          </small>
+          <small
+            class="form-text text-danger"
+            [hidden]="!editForm.get('prixUnitaireTTC')?.errors?.number"
+            jhiTranslate="entity.validation.number"
+          >
+            This field should be a number.
+          </small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label" jhiTranslate="gestockApp.entree.serie" for="field_serie">Serie</label>
+        <input type="text" class="form-control" name="serie" id="field_serie" data-cy="serie" formControlName="serie" />
+        <div *ngIf="editForm.get('serie')!.invalid && (editForm.get('serie')!.dirty || editForm.get('serie')!.touched)">
+          <small class="form-text text-danger" *ngIf="editForm.get('serie')?.errors?.required" jhiTranslate="entity.validation.required">
+            This field is required.
+          </small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label" jhiTranslate="gestockApp.entree.model" for="field_model">Model</label>
+        <input type="text" class="form-control" name="model" id="field_model" data-cy="model" formControlName="model" />
+        <div *ngIf="editForm.get('model')!.invalid && (editForm.get('model')!.dirty || editForm.get('model')!.touched)">
+          <small class="form-text text-danger" *ngIf="editForm.get('model')?.errors?.required" jhiTranslate="entity.validation.required">
+            This field is required.
+          </small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label" for="field_caractSupplementaire">Caractéristiques Supplementaires</label>
+        <textarea
+          type="text"
+          class="form-control"
+          name="caractSupplementaire"
+          id="field_caractSupplementaire"
+          data-cy="caractSupplementaire"
+          formControlName="caractSupplementaire"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label" jhiTranslate="gestockApp.entree.dateEntree" for="field_dateEntree">Date Entree</label>
+        <div class="input-group">
+          <input
+            id="field_dateEntree"
+            data-cy="dateEntree"
+            type="text"
+            class="form-control"
+            name="dateEntree"
+            ngbDatepicker
+            #dateEntreeDp="ngbDatepicker"
+            formControlName="dateEntree"
+          />
+          <span class="input-group-append">
+            <button type="button" class="btn btn-secondary" (click)="dateEntreeDp.toggle()">
+              <fa-icon icon="calendar-alt"></fa-icon>
+            </button>
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label" jhiTranslate="gestockApp.entree.observation" for="field_observation">Observation</label>
+        <textarea
+          type="text"
+          class="form-control"
+          name="observation"
+          id="field_observation"
+          data-cy="observation"
+          formControlName="observation"
+        ></textarea>
+        <div *ngIf="editForm.get('observation')!.invalid && (editForm.get('observation')!.dirty || editForm.get('observation')!.touched)">
+          <small
+            class="form-text text-danger"
+            *ngIf="editForm.get('observation')?.errors?.required"
+            jhiTranslate="entity.validation.required"
+          >
+            This field is required.
+          </small>
+          <small
+            class="form-text text-danger"
+            *ngIf="editForm.get('observation')?.errors?.minlength"
+            jhiTranslate="entity.validation.minlength"
+            [translateValues]="{ min: 10 }"
+          >
+            This field is required to be at least 10 characters.
+          </small>
+          <small
+            class="form-text text-danger"
+            *ngIf="editForm.get('observation')?.errors?.maxlength"
+            jhiTranslate="entity.validation.maxlength"
+            [translateValues]="{ max: 1024 }"
+          >
+            This field cannot be longer than 1024 characters.
+          </small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label" jhiTranslate="gestockApp.entree.bordereau" for="field_bordereau">Bordereau</label>
+        <div>
+          <div *ngIf="editForm.get('bordereau')!.value" class="form-text text-danger clearfix">
+            <a
+              class="pull-left"
+              (click)="openFile(editForm.get('bordereau')!.value, editForm.get('bordereauContentType')!.value)"
+              jhiTranslate="entity.action.open"
+              >open</a
+            ><br />
+            <span class="pull-left"
+              >{{ editForm.get('bordereauContentType')!.value }}, {{ byteSize(editForm.get('bordereau')!.value) }}</span
+            >
+            <button
+              type="button"
+              (click)="editForm.patchValue({ bordereau: null }); editForm.patchValue({ bordereauContentType: null })"
+              class="btn btn-secondary btn-xs pull-right"
+            >
+              <fa-icon icon="times"></fa-icon>
+            </button>
+          </div>
+          <input
+            type="file"
+            id="file_bordereau"
+            data-cy="bordereau"
+            (change)="setFileData($event, 'bordereau', false)"
+            jhiTranslate="entity.action.addblob"
+          />
+        </div>
+        <input type="hidden" class="form-control" name="bordereau" id="field_bordereau" data-cy="bordereau" formControlName="bordereau" />
+        <input
+          type="hidden"
+          class="form-control"
+          name="bordereauContentType"
+          id="field_bordereauContentType"
+          formControlName="bordereauContentType"
+        />
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="gestockApp.entree.enStock" for="field_enStock">En Stock</label>
+          <input type="checkbox" class="form-check" name="enStock" id="field_enStock" data-cy="enStock" formControlName="enStock" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="gestockApp.entree.enCommande" for="field_enCommande">En Commande</label>
+          <input
+            type="checkbox"
+            class="form-check"
+            name="enCommande"
+            id="field_enCommande"
+            data-cy="enCommande"
+            formControlName="enCommande"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="gestockApp.entree.deleted" for="field_deleted">Deleted</label>
+          <input type="checkbox" class="form-check" name="deleted" id="field_deleted" data-cy="deleted" formControlName="deleted" />
+          <div *ngIf="editForm.get('deleted')!.invalid && (editForm.get('deleted')!.dirty || editForm.get('deleted')!.touched)">
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('deleted')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              This field is required.
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

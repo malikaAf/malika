@@ -1,0 +1,110 @@
+{
+  "name": "Entree",
+  "fields": [
+    {
+      "fieldName": "libelle",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "quantite",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "1"
+    },
+    {
+      "fieldName": "prixUnitaireTTC",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "1"
+    },
+    {
+      "fieldName": "serie",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "model",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "caractSupplementaire",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dateEntree",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "bordereau",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "any"
+    },
+    {
+      "fieldName": "observation",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength", "maxlength"],
+      "fieldValidateRulesMinlength": "10",
+      "fieldValidateRulesMaxlength": "1024"
+    },
+    {
+      "fieldName": "enStock",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "enCommande",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "deleted",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "sortie",
+      "otherEntityRelationshipName": "entree",
+      "relationshipName": "sorties"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "article",
+      "otherEntityRelationshipName": "entrees",
+      "relationshipName": "article",
+      "otherEntityField": "libelle"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "fournisseur",
+      "otherEntityRelationshipName": "entrees",
+      "relationshipName": "fournisseur",
+      "otherEntityField": "nom"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "exercice",
+      "otherEntityRelationshipName": "entrees",
+      "relationshipName": "exercice",
+      "otherEntityField": "annee"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "parametre",
+      "otherEntityRelationshipName": "entrees",
+      "relationshipName": "parametre",
+      "otherEntityField": "libelle"
+    }
+  ],
+  "entityTableName": "entree",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["gestock"],
+  "changelogDate": "20210722155948"
+}

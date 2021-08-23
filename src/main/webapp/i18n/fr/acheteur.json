@@ -1,0 +1,33 @@
+{
+  "gestockApp": {
+    "acheteur": {
+      "home": {
+        "title": "Acheteurs",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Acheteur",
+        "createOrEditLabel": "Créer ou éditer un Acheteur",
+        "notFound": "Aucun Acheteur trouvé"
+      },
+      "created": "Un nouveau Acheteur a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Acheteur avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Acheteur avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Etes-vous certain de vouloir supprimer le Acheteur {{ id }} ?"
+      },
+      "detail": {
+        "title": "Acheteur"
+      },
+      "id": "ID",
+      "typeClient": "Type Client",
+      "nom": "Nom",
+      "prenom": "Prenom",
+      "tel": "Tel",
+      "cnib": "Cnib",
+      "email": "Email",
+      "adresse": "Adresse",
+      "numroBanquaire": "Numro Banquaire",
+      "deleted": "Deleted",
+      "sorties": "Sorties"
+    }
+  }
+}

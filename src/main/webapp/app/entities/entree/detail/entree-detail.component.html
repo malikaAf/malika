@@ -1,0 +1,103 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div *ngIf="entree">
+      <h2 data-cy="entreeDetailsHeading"><span jhiTranslate="gestockApp.entree.detail.title">Entree</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ entree.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.entree.libelle">Libelle</span></dt>
+        <dd>
+          <span>{{ entree.libelle }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.entree.quantite">Quantite</span></dt>
+        <dd>
+          <span>{{ entree.quantite }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.entree.prixUnitaireTTC">Prix Unitaire TTC</span></dt>
+        <dd>
+          <span>{{ entree.prixUnitaireTTC }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.entree.serie">Serie</span></dt>
+        <dd>
+          <span>{{ entree.serie }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.entree.model">Model</span></dt>
+        <dd>
+          <span>{{ entree.model }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.entree.caractSupplementaire">Caract Supplementaire</span></dt>
+        <dd>
+          <span>{{ entree.caractSupplementaire }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.entree.dateEntree">Date Entree</span></dt>
+        <dd>
+          <span>{{ entree.dateEntree | formatMediumDate }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.entree.bordereau">Bordereau</span></dt>
+        <dd>
+          <div *ngIf="entree.bordereau">
+            <a (click)="openFile(entree.bordereau, entree.bordereauContentType)" jhiTranslate="entity.action.open">open</a>
+            {{ entree.bordereauContentType }}, {{ byteSize(entree.bordereau) }}
+          </div>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.entree.observation">Observation</span></dt>
+        <dd>
+          <span>{{ entree.observation }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.entree.enStock">En Stock</span></dt>
+        <dd>
+          <span>{{ entree.enStock }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.entree.enCommande">En Commande</span></dt>
+        <dd>
+          <span>{{ entree.enCommande }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.entree.deleted">Deleted</span></dt>
+        <dd>
+          <span>{{ entree.deleted }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.entree.article">Article</span></dt>
+        <dd>
+          <div *ngIf="entree.article">
+            <a [routerLink]="['/article', entree.article?.id, 'view']">{{ entree.article?.libelle }}</a>
+          </div>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.entree.fournisseur">Fournisseur</span></dt>
+        <dd>
+          <div *ngIf="entree.fournisseur">
+            <a [routerLink]="['/fournisseur', entree.fournisseur?.id, 'view']">{{ entree.fournisseur?.nom }}</a>
+          </div>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.entree.exercice">Exercice</span></dt>
+        <dd>
+          <div *ngIf="entree.exercice">
+            <a [routerLink]="['/exercice', entree.exercice?.id, 'view']">{{ entree.exercice?.annee }}</a>
+          </div>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.entree.parametre">Parametre</span></dt>
+        <dd>
+          <div *ngIf="entree.parametre">
+            <a [routerLink]="['/parametre', entree.parametre?.id, 'view']">{{ entree.parametre?.libelle }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/entree', entree.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

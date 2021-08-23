@@ -1,0 +1,40 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div *ngIf="parametre">
+      <h2 data-cy="parametreDetailsHeading"><span jhiTranslate="gestockApp.parametre.detail.title">Parametre</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ parametre.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.parametre.libelle">Libelle</span></dt>
+        <dd>
+          <span>{{ parametre.libelle }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.parametre.tva">Tva</span></dt>
+        <dd>
+          <span>{{ parametre.tva }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.parametre.deleted">Deleted</span></dt>
+        <dd>
+          <span>{{ parametre.deleted }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/parametre', parametre.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

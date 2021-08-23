@@ -1,0 +1,71 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div *ngIf="sortie">
+      <h2 data-cy="sortieDetailsHeading"><span jhiTranslate="gestockApp.sortie.detail.title">Sortie</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ sortie.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.sortie.libelle">Libelle</span></dt>
+        <dd>
+          <span>{{ sortie.libelle }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.sortie.quantite">Quantite</span></dt>
+        <dd>
+          <span>{{ sortie.quantite }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.sortie.prixUnitaireTTC">Prix Unitaire TTC</span></dt>
+        <dd>
+          <span>{{ sortie.prixUnitaireTTC }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.sortie.dateSortie">Date Sortie</span></dt>
+        <dd>
+          <span>{{ sortie.dateSortie | formatMediumDate }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.sortie.bordereau">Bordereau</span></dt>
+        <dd>
+          <div *ngIf="sortie.bordereau">
+            <a (click)="openFile(sortie.bordereau, sortie.bordereauContentType)" jhiTranslate="entity.action.open">open</a>
+            {{ sortie.bordereauContentType }}, {{ byteSize(sortie.bordereau) }}
+          </div>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.sortie.observation">Observation</span></dt>
+        <dd>
+          <span>{{ sortie.observation }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.sortie.deleted">Deleted</span></dt>
+        <dd>
+          <span>{{ sortie.deleted }}</span>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.sortie.entree">Entree</span></dt>
+        <dd>
+          <div *ngIf="sortie.entree">
+            <a [routerLink]="['/entree', sortie.entree?.id, 'view']">{{ sortie.entree?.libelle }}</a>
+          </div>
+        </dd>
+        <dt><span jhiTranslate="gestockApp.sortie.acheteur">Acheteur</span></dt>
+        <dd>
+          <div *ngIf="sortie.acheteur">
+            <a [routerLink]="['/acheteur', sortie.acheteur?.id, 'view']">{{ sortie.acheteur?.nom }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/sortie', sortie.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

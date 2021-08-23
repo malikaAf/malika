@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <!--
+        Added the constraints for entity Sortie.
+    -->
+    <changeSet id="20210722160048-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="entree_id"
+                                 baseTableName="sortie"
+                                 constraintName="fk_sortie__entree_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="entree"/>
+
+        <addForeignKeyConstraint baseColumnNames="acheteur_id"
+                                 baseTableName="sortie"
+                                 constraintName="fk_sortie__acheteur_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="acheteur"/>
+    </changeSet>
+</databaseChangeLog>

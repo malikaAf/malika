@@ -1,0 +1,159 @@
+<div class="mt-5">
+  <div>
+    <jhi-alert-error></jhi-alert-error>
+
+    <div class="alert alert-warning" id="no-result" *ngIf="parametres?.length === 0">
+      <span jhiTranslate="gestockApp.parametre.home.notFound">No parametres found</span>
+    </div>
+  </div>
+
+  <div class="table table-responsive p-datatable-responsive-demo">
+    <p-toolbar styleClass="p-mb-4 mb-3">
+      <ng-template pTemplate="left">
+        <h5 class="p-m-0">Liste des parametres</h5>
+      </ng-template>
+      <button
+        pButton
+        pRipple
+        [label]="Delete"
+        icon="pi pi-trash"
+        class="p-button-danger"
+        title="Supprimer la selection"
+        [disabled]="!selectedParametres || !selectedParametres.length"
+        (click)="deleteSelectedParametres()"
+      ></button>
+
+      <ng-template pTemplate="right">
+        <button pButton pRipple label="Ajouter" icon="pi pi-plus" class="p-button-info p-mr-2 m-1" (click)="showDialog()"></button>
+        <button pButton pRipple label="Actualiser" (click)="loadAll()" [disabled]="isLoading" class="p-button-help">
+          <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        </button>
+      </ng-template>
+    </p-toolbar>
+
+    <p-table
+      *ngIf="parametres && parametres.length > 0"
+      #dt
+      styleClass="p-datatable-gridlines p-datatable-responsive-demo p-datatable-sm p-datatable-striped"
+      [value]="parametres"
+      [rows]="10"
+      [paginator]="true"
+      [rowHover]="true"
+      dataKey="id"
+      currentPageReportTemplate="Projection {first} à {last} de {totalRecords} parametres"
+      [showCurrentPageReport]="true"
+      [(selection)]="selectedParametres"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 3rem">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th class="text-center" pSortableColumn="libelle">Libellé <p-sortIcon field="libelle"></p-sortIcon></th>
+          <th class="text-center" pSortableColumn="category">Catégorie <p-sortIcon field="category"></p-sortIcon></th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-parametre>
+        <tr>
+          <td>
+            <p-tableCheckbox [value]="parametre"></p-tableCheckbox>
+          </td>
+          <td>{{ parametre.libelle }}</td>
+          <td>{{ parametre?.category?.libelle }}</td>
+          <td class="text-center">
+            <button
+              pButton
+              pRipple
+              title="Modifier"
+              icon="pi pi-pencil"
+              class="p-button-rounded p-button-success p-mr-2"
+              (click)="update(parametre)"
+            ></button>
+            <button
+              pButton
+              pRipple
+              title="Supprimer"
+              icon="pi pi-trash"
+              (click)="deleteParametre(parametre)"
+              class="p-button-rounded p-button-danger"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+
+  <p-dialog
+    header="Enrgistrement de parametre"
+    [(visible)]="display"
+    [style]="{ width: '600px' }"
+    [modal]="true"
+    styleClass="p-fluid"
+    [baseZIndex]="10000"
+    [draggable]="true"
+    [resizable]="true"
+  >
+    <form #myForm="ngForm" name="myForm" role="form" novalidate>
+      <div class="ui-dialog-content" style="height: 50vh">
+        <div class="container">
+          <div class="row">
+            
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <span class="text-danger">*</span>
+                <label for="libelle">libelle</label>
+                <input
+                  id="libelle"
+                  minlength="2"
+                  #libelle="ngModel"
+                  type="text"
+                  [(ngModel)]="parametre.libelle"
+                  name="libelle"
+                  id="libelle"
+                  pInputText
+                  required
+                  autofocus
+                  class="form-control"
+                />
+
+                <span *ngIf="libelle.invalid && (libelle.dirty || libelle.touched)">
+                  <span *ngIf="libelle.errors?.required">
+                    <small class="text-danger">Le libellé est requis</small>
+                  </span>
+                  <span *ngIf="libelle.errors?.minlength">
+                    <small class="text-danger">Minimum 2 caractères</small>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <ng-template pTemplate="footer">
+      <div class="text-center">
+        <button type="button" id="cancel-save" (click)="hiddenDialog()" data-cy="entityCreateCancelButton" class="btn btn-secondary">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="myForm.invalid"
+          class="btn btn-primary"
+          (click)="save()"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </ng-template>
+  </p-dialog>
+
+ 
+  <p-confirmDialog [style]="{ width: '600px' }" header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+  <p-toast position="center"></p-toast>
+</div>

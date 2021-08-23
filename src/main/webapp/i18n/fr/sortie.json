@@ -1,0 +1,32 @@
+{
+  "gestockApp": {
+    "sortie": {
+      "home": {
+        "title": "Sorties",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Sortie",
+        "createOrEditLabel": "Créer ou éditer un Sortie",
+        "notFound": "Aucun Sortie trouvé"
+      },
+      "created": "Un nouveau Sortie a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Sortie avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Sortie avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Etes-vous certain de vouloir supprimer le Sortie {{ id }} ?"
+      },
+      "detail": {
+        "title": "Sortie"
+      },
+      "id": "ID",
+      "libelle": "Libelle",
+      "quantite": "Quantite",
+      "prixUnitaireTTC": "Prix Unitaire TTC",
+      "dateSortie": "Date Sortie",
+      "bordereau": "Bordereau",
+      "observation": "Observation",
+      "deleted": "Deleted",
+      "entree": "Entree",
+      "acheteur": "Acheteur"
+    }
+  }
+}

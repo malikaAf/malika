@@ -1,0 +1,410 @@
+<!--<div>-->
+<!--  <h2>-->
+<!--    <span id="user-management-page-heading" jhiTranslate="userManagement.home.title" data-cy="userManagementPageHeading">Users</span>-->
+
+<!--    <div class="d-flex justify-content-end">-->
+<!--      <button class="btn btn-info mr-2" (click)="loadAll()" [disabled]="isLoading">-->
+<!--        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>-->
+<!--        <span jhiTranslate="userManagement.home.refreshListLabel">Refresh List</span>-->
+<!--      </button>-->
+<!--      <button class="btn btn-primary jh-create-entity" [routerLink]="['./new']">-->
+<!--        <fa-icon icon="plus"></fa-icon> <span jhiTranslate="userManagement.home.createLabel">Create a new User</span>-->
+<!--      </button>-->
+<!--    </div>-->
+<!--  </h2>-->
+
+<!--  <jhi-alert-error></jhi-alert-error>-->
+
+<!--  <jhi-alert></jhi-alert>-->
+
+<!--  <div class="table-responsive" *ngIf="users">-->
+<!--    <table class="table table-striped" aria-describedby="user-management-page-heading">-->
+<!--      <thead>-->
+<!--        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="transition.bind(this)">-->
+<!--          <th scope="col" jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>-->
+<!--          <th scope="col" jhiSortBy="login"><span jhiTranslate="userManagement.login">Login</span> <fa-icon icon="sort"></fa-icon></th>-->
+<!--          <th scope="col" jhiSortBy="email"><span jhiTranslate="userManagement.email">Email</span> <fa-icon icon="sort"></fa-icon></th>-->
+<!--          <th scope="col"></th>-->
+<!--          <th scope="col" jhiSortBy="langKey">-->
+<!--            <span jhiTranslate="userManagement.langKey">Lang Key</span> <fa-icon icon="sort"></fa-icon>-->
+<!--          </th>-->
+<!--          <th scope="col"><span jhiTranslate="userManagement.profiles">Profiles</span></th>-->
+<!--          <th scope="col" jhiSortBy="createdDate">-->
+<!--            <span jhiTranslate="userManagement.createdDate">Created Date</span> <fa-icon icon="sort"></fa-icon>-->
+<!--          </th>-->
+<!--          <th scope="col" jhiSortBy="lastModifiedBy">-->
+<!--            <span jhiTranslate="userManagement.lastModifiedBy">Last Modified By</span> <fa-icon icon="sort"></fa-icon>-->
+<!--          </th>-->
+<!--          <th scope="col" jhiSortBy="lastModifiedDate">-->
+<!--            <span jhiTranslate="userManagement.lastModifiedDate">Last Modified Date</span> <fa-icon icon="sort"></fa-icon>-->
+<!--          </th>-->
+<!--          <th scope="col"></th>-->
+<!--        </tr>-->
+<!--      </thead>-->
+<!--      <tbody *ngIf="users">-->
+<!--        <tr *ngFor="let user of users; trackBy: trackIdentity">-->
+<!--          <td>-->
+<!--            <a [routerLink]="['./', user.login, 'view']">{{ user.id }}</a>-->
+<!--          </td>-->
+<!--          <td>{{ user.login }}</td>-->
+<!--          <td>{{ user.email }}</td>-->
+<!--          <td>-->
+<!--            <button-->
+<!--              class="btn btn-danger btn-sm"-->
+<!--              (click)="setActive(user, true)"-->
+<!--              *ngIf="!user.activated"-->
+<!--              jhiTranslate="userManagement.deactivated"-->
+<!--            >-->
+<!--              Deactivated-->
+<!--            </button>-->
+<!--            <button-->
+<!--              class="btn btn-success btn-sm"-->
+<!--              (click)="setActive(user, false)"-->
+<!--              *ngIf="user.activated"-->
+<!--              [disabled]="!currentAccount || currentAccount.login === user.login"-->
+<!--              jhiTranslate="userManagement.activated"-->
+<!--            >-->
+<!--              Activated-->
+<!--            </button>-->
+<!--          </td>-->
+<!--          <td>{{ user.langKey }}</td>-->
+<!--          <td>-->
+<!--            <div *ngFor="let authority of user.authorities">-->
+<!--              <span class="badge badge-info">{{ authority }}</span>-->
+<!--            </div>-->
+<!--          </td>-->
+<!--          <td>{{ user.createdDate | date: 'dd/MM/yy HH:mm' }}</td>-->
+<!--          <td>{{ user.lastModifiedBy }}</td>-->
+<!--          <td>{{ user.lastModifiedDate | date: 'dd/MM/yy HH:mm' }}</td>-->
+<!--          <td class="text-right">-->
+<!--            <div class="btn-group">-->
+<!--              <button type="submit" [routerLink]="['./', user.login, 'view']" class="btn btn-info btn-sm">-->
+<!--                <fa-icon icon="eye"></fa-icon>-->
+<!--                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>-->
+<!--              </button>-->
+
+<!--              <button type="submit" [routerLink]="['./', user.login, 'edit']" queryParamsHandling="merge" class="btn btn-primary btn-sm">-->
+<!--                <fa-icon icon="pencil-alt"></fa-icon>-->
+<!--                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>-->
+<!--              </button>-->
+
+<!--              <button-->
+<!--                type="button"-->
+<!--                class="btn btn-danger btn-sm"-->
+<!--                (click)="deleteUser(user)"-->
+<!--                [disabled]="!currentAccount || currentAccount.login === user.login"-->
+<!--              >-->
+<!--                <fa-icon icon="times"></fa-icon>-->
+<!--                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>-->
+<!--              </button>-->
+<!--            </div>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--      </tbody>-->
+<!--    </table>-->
+<!--  </div>-->
+
+<!--  <div *ngIf="users">-->
+<!--    <div class="row justify-content-center">-->
+<!--      <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>-->
+<!--    </div>-->
+
+<!--    <div class="row justify-content-center">-->
+<!--      <ngb-pagination-->
+<!--        [collectionSize]="totalItems"-->
+<!--        [(page)]="page"-->
+<!--        [pageSize]="itemsPerPage"-->
+<!--        [maxSize]="5"-->
+<!--        [rotate]="true"-->
+<!--        [boundaryLinks]="true"-->
+<!--        (pageChange)="transition()"-->
+<!--      ></ngb-pagination>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<div class="mt-5">
+  <div styleClass="p-datatable-responsive-demo">
+    <jhi-alert-error></jhi-alert-error>
+    <jhi-alert></jhi-alert>
+
+    <div class="alert alert-warning" id="no-result" *ngIf="users?.length === 0">
+      <span jhiTranslate="gestockApp.user.home.notFound">No user found</span>
+    </div>
+
+    <div class="table table-sm p-datatable-responsive-demo p-datatable-striped">
+      <p-toolbar styleClass="p-mb-4 mb-3">
+        <ng-template pTemplate="left">
+          <h5 class="text-center">Liste des utilisateurs</h5>
+        </ng-template>
+
+        <ng-template pTemplate="right">
+          <button pButton pRipple label="Ajouter" icon="pi pi-plus" class="p-button-info p-mr-2 m-1" [routerLink]="['./new']"></button>
+          <button pButton pRipple label="Actualiser" (click)="loadAll()" [disabled]="isLoading" class="p-button-help">
+            <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+          </button>
+        </ng-template>
+      </p-toolbar>
+
+      <p-table
+        *ngIf="users && users.length > 0"
+        #dt
+        styleClass="p-datatable-gridlines p-datatable-responsive-demo p-datatable-sm p-datatable-striped"
+        [value]="users"
+        [rows]="10"
+        [paginator]="true"
+        [rowHover]="true"
+        dataKey="id"
+        currentPageReportTemplate="Projection {first} à {last} de {totalRecords} utilisateurs"
+        [showCurrentPageReport]="true"
+        [globalFilterFields]="['libelle']"
+        styleClass="p-datatable-responsive-demo"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-center" pSortableColumn="login">Utilisateur<p-sortIcon field="login"></p-sortIcon></th>
+            <th class="text-center" pSortableColumn="firstName">Nom<p-sortIcon field="firstName"></p-sortIcon></th>
+            <th class="text-center" pSortableColumn="lastName">Prénom<p-sortIcon field="lastName"></p-sortIcon></th>
+            <th class="text-center" pSortableColumn="email">Email<p-sortIcon field="email"></p-sortIcon></th>
+            <th class="text-center" pSortableColumn="activated">Etat<p-sortIcon field="activated"></p-sortIcon></th>
+            <th class="text-center" pSortableColumn="langKey">Langue<p-sortIcon field="langKey"></p-sortIcon></th>
+            <th class="text-center" pSortableColumn="libelle">Droits<p-sortIcon field="libelle"></p-sortIcon></th>
+            <th class="text-center" pSortableColumn="createdDate">Créer le<p-sortIcon field="createdDate"></p-sortIcon></th>
+            <th class="text-center" pSortableColumn="lastModifiedBy">Modifier par<p-sortIcon field="lastModifiedBy"></p-sortIcon></th>
+            <th class="text-center" pSortableColumn="lastModifiedDate">Modifier le<p-sortIcon field="lastModifiedDate"></p-sortIcon></th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-user>
+          <tr>
+            <td>{{ user.login }}</td>
+            <td>{{ user.firstName }}</td>
+            <td>{{ user.lastName }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <button
+                class="btn btn-danger btn-sm"
+                (click)="setActive(user, true)"
+                *ngIf="!user.activated"
+                jhiTranslate="userManagement.deactivated"
+              >
+                Deactivated
+              </button>
+              <button
+                class="btn btn-success btn-sm"
+                (click)="setActive(user, false)"
+                *ngIf="user.activated"
+                [disabled]="!currentAccount || currentAccount.login === user.login"
+                jhiTranslate="userManagement.activated"
+              >
+                Activated
+              </button>
+            </td>
+            <td>{{ user.langKey }}</td>
+
+            <td>
+              <div *ngFor="let authority of user.authorities">
+                <span class="badge badge-info">{{ authority }}</span>
+              </div>
+            </td>
+            <td>{{ user.createdDate | date: 'dd/MM/yy HH:mm' }}</td>
+            <td>{{ user.lastModifiedBy }}</td>
+            <td>{{ user.lastModifiedDate | date: 'dd/MM/yy HH:mm' }}</td>
+
+            <td class="text-center">
+              <button
+                pButton
+                title="Modifier"
+                pRipple
+                icon="pi pi-pencil"
+                class="p-button-rounded p-button-success p-mr-2"
+                [routerLink]="['./', user.login, 'edit']"
+                queryParamsHandling="merge"
+              ></button>
+              <button
+                (click)="deleteUser(user)"
+                [disabled]="!currentAccount || currentAccount.login === user.login"
+                pButton
+                title="Supprimer"
+                pRipple
+                icon="pi pi-trash"
+                class="p-button-rounded p-button-danger"
+              ></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  header="Enrgistrement de categorie"
+  [(visible)]="display"
+  [style]="{ width: '600px' }"
+  [modal]="true"
+  styleClass="p-fluid"
+  [baseZIndex]="10000"
+  [draggable]="true"
+  [resizable]="false"
+>
+  <div class="row justify-content-center mt-5">
+    <div class="col-8">
+      <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+        <h2 id="myUserLabel" jhiTranslate="userManagement.home.createOrEditLabel">Create or edit a User</h2>
+
+        <div *ngIf="user">
+          <jhi-alert-error></jhi-alert-error>
+
+          <div class="form-group" [hidden]="!user.id">
+            <label jhiTranslate="global.field.id">ID</label>
+            <input type="text" class="form-control" name="id" formControlName="id" readonly />
+          </div>
+
+          <div class="form-group">
+            <label class="form-control-label" jhiTranslate="userManagement.login">Login</label>
+            <input type="text" class="form-control" name="login" formControlName="login" />
+
+            <div *ngIf="editForm.get('login')!.invalid && (editForm.get('login')!.dirty || editForm.get('login')!.touched)">
+              <small
+                class="form-text text-danger"
+                *ngIf="editForm.get('login')?.errors?.required"
+                jhiTranslate="entity.validation.required"
+              >
+                This field is required.
+              </small>
+
+              <small
+                class="form-text text-danger"
+                *ngIf="editForm.get('login')?.errors?.maxlength"
+                jhiTranslate="entity.validation.maxlength"
+                [translateValues]="{ max: 50 }"
+              >
+                This field cannot be longer than 50 characters.
+              </small>
+
+              <small
+                class="form-text text-danger"
+                *ngIf="editForm.get('login')?.errors?.pattern"
+                jhiTranslate="entity.validation.patternLogin"
+              >
+                This field can only contain letters, digits and e-mail addresses.
+              </small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-control-label" jhiTranslate="userManagement.firstName">First Name</label>
+            <input type="text" class="form-control" name="firstName" formControlName="firstName" />
+
+            <div *ngIf="editForm.get('firstName')!.invalid && (editForm.get('firstName')!.dirty || editForm.get('firstName')!.touched)">
+              <small
+                class="form-text text-danger"
+                *ngIf="editForm.get('firstName')?.errors?.maxlength"
+                jhiTranslate="entity.validation.maxlength"
+                [translateValues]="{ max: 50 }"
+              >
+                This field cannot be longer than 50 characters.
+              </small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label jhiTranslate="userManagement.lastName">Last Name</label>
+            <input type="text" class="form-control" name="lastName" formControlName="lastName" />
+
+            <div *ngIf="editForm.get('lastName')!.invalid && (editForm.get('lastName')!.dirty || editForm.get('lastName')!.touched)">
+              <small
+                class="form-text text-danger"
+                *ngIf="editForm.get('lastName')?.errors?.maxlength"
+                jhiTranslate="entity.validation.maxlength"
+                [translateValues]="{ max: 50 }"
+              >
+                This field cannot be longer than 50 characters.
+              </small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-control-label" jhiTranslate="userManagement.email">Email</label>
+            <input type="email" class="form-control" name="email" formControlName="email" />
+
+            <div *ngIf="editForm.get('email')!.invalid && (editForm.get('email')!.dirty || editForm.get('email')!.touched)">
+              <small
+                class="form-text text-danger"
+                *ngIf="editForm.get('email')?.errors?.required"
+                jhiTranslate="entity.validation.required"
+              >
+                This field is required.
+              </small>
+
+              <small
+                class="form-text text-danger"
+                *ngIf="editForm.get('email')?.errors?.maxlength"
+                jhiTranslate="entity.validation.maxlength"
+                [translateValues]="{ max: 100 }"
+              >
+                This field cannot be longer than 100 characters.
+              </small>
+
+              <small
+                class="form-text text-danger"
+                *ngIf="editForm.get('email')?.errors?.minlength"
+                jhiTranslate="entity.validation.minlength"
+                [translateValues]="{ min: 5 }"
+              >
+                This field is required to be at least 5 characters.
+              </small>
+
+              <small
+                class="form-text text-danger"
+                *ngIf="editForm.get('email')?.errors?.email"
+                jhiTranslate="global.messages.validate.email.invalid"
+              >
+                Your email is invalid.
+              </small>
+            </div>
+          </div>
+
+          <div class="form-check">
+            <label class="form-check-label" for="activated">
+              <input
+                class="form-check-input"
+                [attr.disabled]="user.id === undefined ? 'disabled' : null"
+                type="checkbox"
+                id="activated"
+                name="activated"
+                formControlName="activated"
+              />
+              <span jhiTranslate="userManagement.activated">Activated</span>
+            </label>
+          </div>
+
+          <div class="form-group" *ngIf="languages && languages.length > 0">
+            <label jhiTranslate="userManagement.langKey">Lang Key</label>
+            <select class="form-control" id="langKey" name="langKey" formControlName="langKey">
+              <option *ngFor="let language of languages" [value]="language">{{ language | findLanguageFromKey }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label jhiTranslate="userManagement.profiles">Profiles</label>
+            <select class="form-control" multiple name="authority" formControlName="authorities">
+              <option *ngFor="let authority of authorities" [value]="authority">{{ authority }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div *ngIf="user">
+          <button type="button" class="btn btn-secondary">
+            <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+          </button>
+
+          <button type="submit" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+            <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</p-dialog>

@@ -1,0 +1,103 @@
+entity Category {
+	libelle String required minlength(2) unique,
+    deleted Boolean required
+ }
+ entity Mark {
+	libelle String required minlength(2) unique,
+    deleted Boolean required
+ }
+entity Article {
+    libelle String required minlength(2) unique,
+    deleted Boolean required
+ }
+enum TypeFournisseur{
+	FOURNISSEUR
+}
+enum TypeAcheteur{
+	ACHETEUR
+}
+entity Fournisseur {
+    typeClient TypeFournisseur,
+	nom String minlength(2) required,
+	prenom String minlength(2),
+	tel String required minlength(6) unique,
+	cnib String required minlength(4) unique,
+    email String required minlength(4) unique,
+    adresse String minlength(2),
+	numroBanquaire String minlength(4) unique,
+    deleted Boolean required
+}
+
+entity Acheteur {
+    typeClient TypeAcheteur,
+	nom String minlength(2) required,
+	prenom String minlength(2),
+	tel String required minlength(6) unique,
+	cnib String required minlength(4) unique,
+    email String required minlength(4) unique,
+    adresse String minlength(2),
+	numroBanquaire String minlength(4) unique,
+    deleted Boolean required
+}
+
+ entity Parametre {
+	libelle String required minlength(2),
+	tva Double min(1),
+    deleted Boolean required
+}
+entity Exercice {
+	annee Integer min(2),
+    deleted Boolean required
+}
+entity Entree {
+  libelle String,
+  quantite Double required min(1),
+  prixUnitaireTTC Double required min(1),
+  serie String required,
+  model String required,
+  caractSupplementaire String,
+  dateEntree LocalDate,
+  bordereau AnyBlob,
+  observation String required minlength(10) maxlength(1024),
+  enStock Boolean,
+  enCommande Boolean,
+  deleted Boolean required
+ }
+ entity Sortie {
+  libelle String,
+  quantite Double required min(1),
+  prixUnitaireTTC Double required min(1),
+  dateSortie LocalDate,
+  bordereau AnyBlob,
+  observation String required minlength(10) maxlength(1024),
+  deleted Boolean required
+ }
+relationship OneToMany {
+	Category {marks} to Mark {category(libelle)},
+    Mark {articles} to Article {mark(libelle)}, 
+    Article {entrees} to Entree {article(libelle)},
+    Fournisseur {Entrees} to Entree {fournisseur(nom)},
+    Exercice {Entrees} to Entree {exercice(annee)},
+    Parametre {Entrees} to Entree {parametre(libelle)}
+    Entree {sorties} to Sortie {Entree(libelle)}
+    Acheteur {sorties} to Sortie {acheteur(nom)}
+ }
+
+ application {
+	config {
+        authenticationType jwt
+        baseName gestock
+        serverPort 8080
+        databaseType sql
+        devDatabaseType postgresql
+        dtoSuffix DTO
+        packageName com.mycompany.myapp
+        prodDatabaseType postgresql
+ 		clientTheme Cerulean
+        nativeLanguage fr
+        languages [fr, en]
+    }
+    entities Category, Mark, Article, Fournisseur, Acheteur, Parametre, Exercice, Entree, Sortie
+    dto Category, Mark, Article, Fournisseur, Acheteur, Parametre, Exercice, Entree, Sortie with mapstruct
+    service Category, Mark, Article, Fournisseur, Acheteur, Parametre, Exercice, Entree, Sortie with serviceClass
+}

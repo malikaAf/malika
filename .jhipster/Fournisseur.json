@@ -1,0 +1,75 @@
+{
+  "name": "Fournisseur",
+  "fields": [
+    {
+      "fieldName": "typeClient",
+      "fieldType": "TypeFournisseur",
+      "fieldValues": "FOURNISSEUR"
+    },
+    {
+      "fieldName": "nom",
+      "fieldType": "String",
+      "fieldValidateRules": ["minlength", "required"],
+      "fieldValidateRulesMinlength": "2"
+    },
+    {
+      "fieldName": "prenom",
+      "fieldType": "String",
+      "fieldValidateRules": ["minlength"],
+      "fieldValidateRulesMinlength": "2"
+    },
+    {
+      "fieldName": "tel",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength", "unique"],
+      "fieldValidateRulesMinlength": "6"
+    },
+    {
+      "fieldName": "cnib",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength", "unique"],
+      "fieldValidateRulesMinlength": "4"
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength", "unique"],
+      "fieldValidateRulesMinlength": "4"
+    },
+    {
+      "fieldName": "adresse",
+      "fieldType": "String",
+      "fieldValidateRules": ["minlength"],
+      "fieldValidateRulesMinlength": "2"
+    },
+    {
+      "fieldName": "numroBanquaire",
+      "fieldType": "String",
+      "fieldValidateRules": ["minlength", "unique"],
+      "fieldValidateRulesMinlength": "4"
+    },
+    {
+      "fieldName": "deleted",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "entree",
+      "otherEntityRelationshipName": "fournisseur",
+      "relationshipName": "entrees"
+    }
+  ],
+  "entityTableName": "fournisseur",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["gestock"],
+  "changelogDate": "20210722155548"
+}

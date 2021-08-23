@@ -1,0 +1,88 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-parametre-heading" data-cy="ParametreCreateUpdateHeading" jhiTranslate="gestockApp.parametre.home.createOrEditLabel">
+        Create or edit a Parametre
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="form-group" [hidden]="editForm.get('id')!.value == null">
+          <label class="form-control-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="gestockApp.parametre.libelle" for="field_libelle">Libelle</label>
+          <input type="text" class="form-control" name="libelle" id="field_libelle" data-cy="libelle" formControlName="libelle" />
+          <div *ngIf="editForm.get('libelle')!.invalid && (editForm.get('libelle')!.dirty || editForm.get('libelle')!.touched)">
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('libelle')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              This field is required.
+            </small>
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('libelle')?.errors?.minlength"
+              jhiTranslate="entity.validation.minlength"
+              [translateValues]="{ min: 2 }"
+            >
+              This field is required to be at least 2 characters.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="gestockApp.parametre.tva" for="field_tva">Tva</label>
+          <input type="number" class="form-control" name="tva" id="field_tva" data-cy="tva" formControlName="tva" />
+          <div *ngIf="editForm.get('tva')!.invalid && (editForm.get('tva')!.dirty || editForm.get('tva')!.touched)">
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('tva')?.errors?.min"
+              jhiTranslate="entity.validation.min"
+              [translateValues]="{ min: 1 }"
+            >
+              This field should be at least 1.
+            </small>
+            <small class="form-text text-danger" [hidden]="!editForm.get('tva')?.errors?.number" jhiTranslate="entity.validation.number">
+              This field should be a number.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="gestockApp.parametre.deleted" for="field_deleted">Deleted</label>
+          <input type="checkbox" class="form-check" name="deleted" id="field_deleted" data-cy="deleted" formControlName="deleted" />
+          <div *ngIf="editForm.get('deleted')!.invalid && (editForm.get('deleted')!.dirty || editForm.get('deleted')!.touched)">
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('deleted')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              This field is required.
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
